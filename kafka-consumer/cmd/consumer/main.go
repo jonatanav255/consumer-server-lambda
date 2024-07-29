@@ -6,12 +6,12 @@ import (
 )
 
 func main() {
-    // Load configuration
-    cfg := config.LoadConfig()
+	// Load configuration
+	cfg := config.LoadConfig()
 
-    // Initialize and start the Kafka consumer
-    kafka.StartKafkaConsumer(cfg)
+	// Initialize and start the Kafka consumer
+	kafka.StartKafkaConsumer(cfg)
 
-    // Note: The consumer will run until interrupted (Ctrl+C)
-    // Cleanup and shutdown logic is handled in StartKafkaConsumer
+	// Note: The consumer will run until interrupted (Ctrl+C)
+	// Cleanup and shutdown logic is handled in StartKafkaConsumer
 }

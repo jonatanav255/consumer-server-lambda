@@ -1,21 +1,27 @@
 package config
 
 import (
+	"context"
+	"log"
+
+	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/spf13/viper"
 )
 
-// Config struct holds the entire configuration for the application.
 type Config struct {
 	Kafka KafkaConfig
+	AWS   AWSConfig
 }
 
-// KafkaConfig struct holds the Kafka-specific configuration settings.
 type KafkaConfig struct {
 	Brokers []string
 	Topic   string
 }
 
-// LoadConfig function initializes and loads the configuration settings.
+type AWSConfig struct {
+	Region string
+}
+
 func LoadConfig() *Config {
 	// Set default values for Kafka configuration
 	viper.SetDefault("kafka.brokers", []string{"localhost:9092"})
@@ -24,11 +30,20 @@ func LoadConfig() *Config {
 	// Automatically override the defaults with environment variables if available
 	viper.AutomaticEnv()
 
+	// Load AWS configuration
+	awsCfg, err := config.LoadDefaultConfig(context.TODO())
+	if err != nil {
+		log.Fatalf("unable to load AWS SDK config, %v", err)
+	}
+
 	// Create and return the configuration object with loaded settings
 	return &Config{
 		Kafka: KafkaConfig{
 			Brokers: viper.GetStringSlice("kafka.brokers"),
 			Topic:   viper.GetString("kafka.topic"),
+		},
+		AWS: AWSConfig{
+			Region: awsCfg.Region,
 		},
 	}
 }
